@@ -21,7 +21,6 @@ import org.mcphoton.core.Photon;
 import org.mcphoton.messaging.ChatMessage;
 import org.mcphoton.network.SendablePacket;
 import com.electronwill.json.Json;
-import com.electronwill.json.JsonWriter;
 
 /**
  *
@@ -32,16 +31,14 @@ public final class ResponsePacket extends SendablePacket {
 	public String jsonResponse;
 	
 	public ResponsePacket(Map<String, Object> jsonObject) throws IOException {
-		JsonWriter jw = new JsonWriter(false);
-		jw.write(jsonObject);
-		this.jsonResponse = jw.toString();
+		this.jsonResponse = Json.writeToString(jsonObject);
 	}
 	
 	public ResponsePacket(String jsonResponse) {
 		this.jsonResponse = jsonResponse;
 	}
 	
-	public ResponsePacket() {
+	public ResponsePacket() throws IOException {
 		Map<String, Object> jsonObject = new HashMap<>();
 		
 		// == Version ==
@@ -78,7 +75,7 @@ public final class ResponsePacket extends SendablePacket {
 		jsonObject.put("favicon", logoString);
 		
 		// == Finalization ==
-		this.jsonResponse = Json.dump(jsonObject, false);
+		this.jsonResponse = Json.writeToString(jsonObject, false);
 	}
 	
 	@Override

@@ -46,8 +46,6 @@ import com.electronwill.collections.Bag;
 import com.electronwill.concurrent.IntConstant;
 import com.electronwill.concurrent.SynchronizedBag;
 import com.electronwill.streams.ByteArrayOutputStream;
-import com.electronwill.text.ModifiableCharSequence;
-import com.electronwill.text.StringUtils;
 
 public final class Photon {
 	
@@ -82,7 +80,7 @@ public final class Photon {
 	
 	public static void main(String[] args) {
 		String pres = "Photon server v" + coreVersion() + " for Minecraft " + gameVersion();
-		ModifiableCharSequence bar = new ModifiableCharSequence(pres.length());
+		StringBuilder bar = new StringBuilder(pres.length());
 		for (int i = 0; i < pres.length(); i++) {
 			bar.append("=");
 		}
@@ -223,11 +221,11 @@ public final class Photon {
 			setLogo(logoSetting);
 			
 			String spawnSetting = props.getProperty("spawn");
-			List<String> spawnParts = StringUtils.splitString(spawnSetting, ',');
-			String worldName = spawnParts.get(0);
-			int x = Integer.parseInt(spawnParts.get(1));
-			int y = Integer.parseInt(spawnParts.get(2));
-			int z = Integer.parseInt(spawnParts.get(3));
+			String[] spawnParts = spawnSetting.split(",");
+			String worldName = spawnParts[0];
+			int x = Integer.parseInt(spawnParts[1]);
+			int y = Integer.parseInt(spawnParts[2]);
+			int z = Integer.parseInt(spawnParts[3]);
 			World w = World.get(worldName);
 			if (w == null) {
 				w = new OverWorld(worldName, Difficulty.NORMAL, Gamemode.CREATIVE);

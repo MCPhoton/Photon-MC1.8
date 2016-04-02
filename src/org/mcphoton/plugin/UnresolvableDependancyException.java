@@ -16,7 +16,6 @@ package org.mcphoton.plugin;
 
 import java.util.Iterator;
 import java.util.List;
-import com.electronwill.text.ModifiableCharSequence;
 
 /**
  * 
@@ -28,7 +27,7 @@ public final class UnresolvableDependancyException extends Exception {
 	private final String msg;
 	
 	public UnresolvableDependancyException(String plugin, List<String> dependancies) {
-		ModifiableCharSequence mcs = new ModifiableCharSequence(plugin);
+		StringBuilder mcs = new StringBuilder(plugin);
 		mcs.append(" depends on : ");
 		for (Iterator iterator = dependancies.iterator(); iterator.hasNext();) {
 			String dep = (String) iterator.next();
@@ -40,7 +39,7 @@ public final class UnresolvableDependancyException extends Exception {
 	}
 	
 	public UnresolvableDependancyException(String plugin, String... dependancies) {
-		ModifiableCharSequence mcs = new ModifiableCharSequence(plugin);
+		StringBuilder mcs = new StringBuilder(plugin);
 		mcs.append(" depends on : ");
 		for (int i = 0; i < dependancies.length; i++) {
 			String dep = dependancies[i];

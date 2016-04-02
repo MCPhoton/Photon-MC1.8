@@ -33,8 +33,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import org.mcphoton.core.Photon;
 import com.electronwill.collections.OpenList;
-import com.electronwill.text.ModifiableCharSequence;
-import com.electronwill.text.StringUtils;
 
 /**
  * Manages the plugins that extends {@link JavaPlugin}.
@@ -215,7 +213,7 @@ public final class PhotonPluginsManager extends SpecificPluginsManager<JavaPlugi
 				} else if (depend.indexOf(',') == -1) {// one dependancy
 					resolver.put(name, depend);
 				} else {// multiple dependancies
-					String[] dependancies = StringUtils.splitStringCSV(depend).toArray();
+					String[] dependancies = depend.split(",");
 					resolver.put(name, dependancies);
 				}
 			} catch (Exception ex) {
@@ -271,14 +269,14 @@ public final class PhotonPluginsManager extends SpecificPluginsManager<JavaPlugi
 						throw new UnloadablePluginException("This needed dependancy is unmet: " + depend);
 					}
 				} else {// multiple dependancies
-					List<String> depends = StringUtils.splitStringCSV(depend);
-					ModifiableCharSequence unmetMessage = new ModifiableCharSequence();
+					String[] depends = depend.split(",");
+					StringBuilder unmetMessage = new StringBuilder();
 					for (String dep : depends) {
 						if (!isLoaded(dep)) {
 							unmetMessage.append(dep).append(", ");
 						}
 					}
-					if (!unmetMessage.isEmpty()) {
+					if (unmetMessage.length() != 0) {
 						throw new UnloadablePluginException("These dependancies are unmet: " + unmetMessage);
 					}
 				}

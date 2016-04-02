@@ -15,7 +15,6 @@
 package org.mcphoton.util;
 
 import org.mcphoton.world.World;
-import com.electronwill.text.ModifiableCharSequence;
 
 /**
  * A location defined by a World and 3 coordinates: X, Y, Z. This class is Thread-safe.
@@ -48,7 +47,7 @@ public class Location {
 	 */
 	@Override
 	public String toString() {
-		ModifiableCharSequence mcs = new ModifiableCharSequence();
+		StringBuilder mcs = new StringBuilder();
 		mcs.append(world.getName()).append(',').append(x).append(',').append(y).append(',').append(z);
 		return mcs.toString();
 	}

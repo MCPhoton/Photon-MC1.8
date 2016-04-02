@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Locale;
 import com.electronwill.streams.BlackHoleStream;
-import com.electronwill.text.ModifiableCharSequence;
 
 /**
  * Redirects everything to the Photon's log, with the debug level.
@@ -28,7 +27,7 @@ import com.electronwill.text.ModifiableCharSequence;
  */
 public final class ErrorLogPrintStream extends PrintStream {
 	
-	private final ModifiableCharSequence line = new ModifiableCharSequence();
+	private final StringBuilder line = new StringBuilder();
 	
 	public ErrorLogPrintStream() {
 		super(new BlackHoleStream());
@@ -70,7 +69,7 @@ public final class ErrorLogPrintStream extends PrintStream {
 	
 	private ErrorLogPrintStream logLine() {
 		error(line);
-		line.clear();
+		line.setLength(0);
 		return this;
 	}
 	
@@ -91,7 +90,7 @@ public final class ErrorLogPrintStream extends PrintStream {
 	
 	@Override
 	public void println(String x) {
-		if (line.isEmpty()) {
+		if (line.length() == 0) {
 			error(x);
 		} else {
 			line.append(x);
@@ -187,7 +186,7 @@ public final class ErrorLogPrintStream extends PrintStream {
 	
 	@Override
 	public void write(byte[] buf, int off, int len) {
-		line.appendChars(Arrays.copyOfRange(buf, off, off + len));
+		line.append(Arrays.copyOfRange(buf, off, off + len));
 	}
 	
 	@Override

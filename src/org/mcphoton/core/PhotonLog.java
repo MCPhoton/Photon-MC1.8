@@ -34,7 +34,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 import org.mcphoton.messaging.Color;
 import org.mcphoton.util.Log;
-import com.electronwill.text.ModifiableCharSequence;
 
 /**
  * Handles the server's log.
@@ -68,7 +67,7 @@ public final class PhotonLog extends Log {
 	private final PrintWriter consoleWriter;
 	private volatile boolean debug = false;
 	
-	private final ModifiableCharSequence line = new ModifiableCharSequence(100);
+	private final StringBuilder line = new StringBuilder(100);
 	private int lastDay;// the last day of month
 	
 	public PhotonLog(PrintWriter consoleWriter) throws IOException {
@@ -88,12 +87,12 @@ public final class PhotonLog extends Log {
 		timeFormatter.formatTo(dateTime, line);
 		line.append(" >>> ").append(cmd);
 		try {
-			logFileWriter.write(line.getData(), 0, line.length());
+			logFileWriter.write(line.toString());
 			logFileWriter.newLine();
 		} catch (IOException ex) {
 			error(ex, "Unable to write console command in the log file!");;
 		} finally {
-			line.clear();
+			line.setLength(0);
 		}
 	}
 	
@@ -139,13 +138,13 @@ public final class PhotonLog extends Log {
 		if (stack.length == 0) {
 			t.fillInStackTrace();
 		}
-		final ModifiableCharSequence mcs = new ModifiableCharSequence();
+		final StringBuilder mcs = new StringBuilder();
 		final int offset = (stack[0].getClassName().equals(PhotonLog.class.getName())) ? 1 : 0;
 		for (int i = offset; i < stack.length; i++) {
 			StackTraceElement element = stack[i];
 			mcs.append("\tat ").append(element);
 			raw(mcs);
-			mcs.clear();
+			mcs.setLength(0);
 		}
 		final Throwable cause = t.getCause();
 		if (cause != null) {
@@ -178,7 +177,7 @@ public final class PhotonLog extends Log {
 			timeFormatter.formatTo(dateTime, line);
 			line.append(' ').append(level).append(' ').append(source).append(": ").append(msg);
 			raw(line, dateTime);
-			line.clear();
+			line.setLength(0);
 		}
 	}
 	
@@ -190,17 +189,17 @@ public final class PhotonLog extends Log {
 			line.append(' ').append(level).append(' ').append(source).append(": ").append(msg);
 			line.append("\u001B[0m");// reset
 			raw(line, dateTime);
-			line.clear();
+			line.setLength(0);
 		}
 	}
 	
 	@Override
-	public synchronized void raw(ModifiableCharSequence line) {
+	public synchronized void raw(StringBuilder line) {
 		LocalDateTime dateTime = LocalDateTime.now();
 		raw(line, dateTime);
 	}
 	
-	public synchronized void raw(ModifiableCharSequence line, LocalDateTime dateTime) {
+	public synchronized void raw(StringBuilder line, LocalDateTime dateTime) {
 		if (line != null && line.length() > 0) {
 			try {
 				int day = dateTime.getDayOfMonth();
@@ -214,12 +213,12 @@ public final class PhotonLog extends Log {
 					Files.createSymbolicLink(logLinkPath, logFile.toPath());
 					lastDay = day;
 				}
-				logFileWriter.write(line.getData(), 0, line.length());
+				logFileWriter.write(line.toString());
 				logFileWriter.newLine();
 			} catch (Exception ex) {
 				consoleWriter.write("[??:??:??] (!!) Photon : Unable to write in the log file. " + ex);
 			}
-			consoleWriter.write(line.getData(), 0, line.length());
+			consoleWriter.write(line.toString());
 			consoleWriter.println();
 		}
 	}

@@ -1,5 +1,6 @@
 package org.mcphoton.messaging;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +176,12 @@ public abstract class ChatMessage {
 	
 	@Override
 	public String toString() {
-		return Json.dump(map, false);
+		try {
+			return Json.writeToString(map, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public void unsetBold() {

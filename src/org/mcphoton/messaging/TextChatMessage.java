@@ -2,7 +2,6 @@ package org.mcphoton.messaging;
 
 import java.util.List;
 import java.util.Map;
-import com.electronwill.text.ModifiableCharSequence;
 
 /**
  * A textual chat message. This class also provides a way to parse a message that uses '§'-codes, and to create such a
@@ -19,7 +18,7 @@ public class TextChatMessage extends ChatMessage {
 	public static TextChatMessage parse(CharSequence csq) {
 		TextChatMessage main = null;// the main part of the msg
 		TextChatMessage current = null;// the part we're currently working on
-		ModifiableCharSequence mcs = new ModifiableCharSequence();
+		StringBuilder mcs = new StringBuilder();
 		for (int i = 0; i < csq.length(); i++) {
 			char c = csq.charAt(i);
 			if (c == '§' && i + 1 < csq.length()) {
@@ -33,7 +32,7 @@ public class TextChatMessage extends ChatMessage {
 						main.addExtra(current);
 					current = new TextChatMessage();
 				}
-				mcs = new ModifiableCharSequence();
+				mcs = new StringBuilder();
 				
 				char c2 = csq.charAt(++i);
 				switch (c2) {
@@ -148,7 +147,7 @@ public class TextChatMessage extends ChatMessage {
 	 * of 2 characters: the '§' character and another character. The second character definds the color/style to apply.
 	 */
 	public String toLegacyString() {
-		ModifiableCharSequence mcs = new ModifiableCharSequence();
+		StringBuilder mcs = new StringBuilder();
 		if (isBold())
 			mcs.append("§l");
 		if (isObfuscated())
@@ -189,7 +188,7 @@ public class TextChatMessage extends ChatMessage {
 	 * creates color/style.
 	 */
 	public String toConsoleString() {
-		ModifiableCharSequence mcs = new ModifiableCharSequence();
+		StringBuilder mcs = new StringBuilder();
 		if (isBold())
 			mcs.append("\u001B[1m");
 		// obfuscated does not exist
